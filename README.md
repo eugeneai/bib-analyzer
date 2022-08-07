@@ -51,3 +51,11 @@
 * bibtex_disser_authors.bib -- файл библиографии, построенный по диссертациям
 
 Все свойства диссертаций и многие свойства литературы прописываются в граф как свойства узлов, поэтому его можно раскрашивать и сортировать по параметрам города или института издания, или по содержанию ключевых слов.
+
+## Отдельная благодарность проектам
+
+* `Distribute`
+* `modern-package-template`
+
+.. _Distribute: http://code.activestate.com/pypm/distribute/
+.. _`modern-package-template`: http://code.activestate.com/pypm/modern-package-template/
