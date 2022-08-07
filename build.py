@@ -6,31 +6,31 @@ import Levenshtein
 import networkx as nx
 import itertools
 
-l2r_oneway = { u"JI":u'Л', u'J|':u'Л', u'JL':u'Л' }
-l2r = { u'a':u'а', u'c':u'с', u'e':u'е', u'k':u'к', u'o':u'о', u'p':u'р', u'u':u'и', u'x':u'х', u'y':u'у',\
-        u'A':u'А', u'B':u'В', u'C':u'С', u'E':u'Е', u'H':u'Н', u'K':u'К', u'O':u'О', u'P':u'Р', u'X':u'Х', u'Y':u'У' }
+l2r_oneway = { "JI":'Л', 'J|':'Л', 'JL':'Л' }
+l2r = { 'a':'а', 'c':'с', 'e':'е', 'k':'к', 'o':'о', 'p':'р', 'u':'и', 'x':'х', 'y':'у',\
+        'A':'А', 'B':'В', 'C':'С', 'E':'Е', 'H':'Н', 'K':'К', 'O':'О', 'P':'Р', 'X':'Х', 'Y':'У' }
 r2l = {}
 for i in l2r: r2l[ l2r[i] ] = i; # swapping key-values
-wrong_words = [ u'Атлас', u'Inform', u'Исслед', u'Publ', u'Proc', u'Guidance', u'Suppl', u'Sci', u'Space', u'Notices',\
-                u'Paper', u'www', u'html', u'Монография', u'ред', u'Lett', u'pp', u'англ', u'журнал', u'Journ', u'Machine', u'Algorithm', \
-                u'Photometry', u'тез', u'гос', u'Известия', u'вузов', u'Astrophys', u'СССР', u'изд', u'СПб', u'Optical', u'докл', u'Тез', \
-                u'January', u'February', u'March', u'April', u'May', u'June', u'July', u'August', u'September', u'November', u'December', \
-                u'Цupkyляp', u'Навигации', u'Univ', u'Pub', u'Труды', u'Chicago', u'Наука', u'Случайные', u'Тезисы', u'Журнал', u'Symp', \
-                u'Not', u'Geophys', u'Aerosp', u'Tech', u'Geophys', u'Galaxy', u'Прикладная', u'ВУЗов', u'et', u'al', u'пособие', u'Вестник', \
-                u'Машиностроение', u'Стр', u'Wash.', u'Ca.', u'Control', u'IX', u'ХI', u'ХХ', u'IV', u'VI', u'II', u'радио', u'Радио', \
-                u'Сов.', u'Япония', u'France', u'Germany', u"Moscow", u"Processing Data.", u'Материал', u"конф Тр.", u"Тр. конф", u"its", \
-                u"Applications", u"Nuovo Cim.", u'ил.', u'физ.', u'It.', u'Trans.', u'IEEE', u'J-', u'Acta.', u'Acad.', u'Astron', u'inc', \
-                u'Inc', u'INC', u'т.', u'доп.', u'перераб', u'Высш.', u'шк.', u'El.', u'Еl.', u'EL.', u"IRE", u'Analysis', u'Image', u'Шк.', \
-                u'школа', u'МИРЭА', u'исправл', u'АОЭ', u"науч.", u"Сб.", u"Материалы", u"междунар", u"Conf AIP.", u"Conf", u"Eds S.", u"Eds.", \
-                u"Eds", u"Press", u"AIP", u"журн.", u"журн", u"Опт.", u"Петербург", u"С.Петербург", u"Космич.", u"Nucl Phys.", u"Phys.", \
-                u"Ed.", u"Тр.", u"Pointing", u"in Proce.", u"Ann Rev.", u"Rev.", u"им.", u"ИПМ" ]
+wrong_words = [ 'Атлас', 'Inform', 'Исслед', 'Publ', 'Proc', 'Guidance', 'Suppl', 'Sci', 'Space', 'Notices',\
+                'Paper', 'www', 'html', 'Монография', 'ред', 'Lett', 'pp', 'англ', 'журнал', 'Journ', 'Machine', 'Algorithm', \
+                'Photometry', 'тез', 'гос', 'Известия', 'вузов', 'Astrophys', 'СССР', 'изд', 'СПб', 'Optical', 'докл', 'Тез', \
+                'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December', \
+                'Цupkyляp', 'Навигации', 'Univ', 'Pub', 'Труды', 'Chicago', 'Наука', 'Случайные', 'Тезисы', 'Журнал', 'Symp', \
+                'Not', 'Geophys', 'Aerosp', 'Tech', 'Geophys', 'Galaxy', 'Прикладная', 'ВУЗов', 'et', 'al', 'пособие', 'Вестник', \
+                'Машиностроение', 'Стр', 'Wash.', 'Ca.', 'Control', 'IX', 'ХI', 'ХХ', 'IV', 'VI', 'II', 'радио', 'Радио', \
+                'Сов.', 'Япония', 'France', 'Germany', "Moscow", "Processing Data.", 'Материал', "конф Тр.", "Тр. конф", "its", \
+                "Applications", "Nuovo Cim.", 'ил.', 'физ.', 'It.', 'Trans.', 'IEEE', 'J-', 'Acta.', 'Acad.', 'Astron', 'inc', \
+                'Inc', 'INC', 'т.', 'доп.', 'перераб', 'Высш.', 'шк.', 'El.', 'Еl.', 'EL.', "IRE", 'Analysis', 'Image', 'Шк.', \
+                'школа', 'МИРЭА', 'исправл', 'АОЭ', "науч.", "Сб.", "Материалы", "междунар", "Conf AIP.", "Conf", "Eds S.", "Eds.", \
+                "Eds", "Press", "AIP", "журн.", "журн", "Опт.", "Петербург", "С.Петербург", "Космич.", "Nucl Phys.", "Phys.", \
+                "Ed.", "Тр.", "Pointing", "in Proce.", "Ann Rev.", "Rev.", "им.", "ИПМ" ]
 
-split_words = [u' and ', u' And ', u'и др.', u'М.:', u'et al.', u'et all.', u'Под. ред.', u'Под ред.', u'. —', u'//', '/', u', ', ',']
+split_words = [' and ', ' And ', 'и др.', 'М.:', 'et al.', 'et all.', 'Под. ред.', 'Под ред.', '. —', '//', '/', ', ', ',']
 
-r2l_translit = { u'а':u'a', u'б':u'b', u'в':u'v', u'г':u'g', u'д':u'd', u'е':u'e', u'ё':u'yo', u'ж':u'jh', u'з':u'z',\
-        u'и':u'i', u'й':u'y', u'к':u'k', u'л':u'l', u'м':u'm', u'н':u'n', u'о':u'o', u'п':u'p', u'р':u'r',\
-        u'с':u's', u'т':u't', u'у':u'u', u'ф':u'f', u'х':u'h', u'ц':u'ts', u'ч':u'ch', u'ш':u'ch', u'щ':u'sh',\
-        u'ъ':u'', u'ы':u'y', u'ь':u'', u'э':u'e', u'ю':u'u', u'я':u'ya' }
+r2l_translit = { 'а':'a', 'б':'b', 'в':'v', 'г':'g', 'д':'d', 'е':'e', 'ё':'yo', 'ж':'jh', 'з':'z',\
+        'и':'i', 'й':'y', 'к':'k', 'л':'l', 'м':'m', 'н':'n', 'о':'o', 'п':'p', 'р':'r',\
+        'с':'s', 'т':'t', 'у':'u', 'ф':'f', 'х':'h', 'ц':'ts', 'ч':'ch', 'ш':'ch', 'щ':'sh',\
+        'ъ':'', 'ы':'y', 'ь':'', 'э':'e', 'ю':'u', 'я':'ya' }
 
 books_counter = 0
 authors_counter = 0
@@ -39,7 +39,7 @@ def mark_book_fields( book_txt ):
   # Kornus K., Lehner M., Schroeder M. Geometric Inflight Calibration of the Stereoscopic CCD-Linescanner // MOMS-2P, ISPRS Com I Symp., Bangalore. 1998. Vol. XXXII-1. P. 148-155.
   # Roeser, S. And Bastian, U., 1991. &quot;PPM Star Catalogue&quot;. Astronomisches Rechen-1.stitut, Heidelberg. Spectrum Akademischer Verlag. Heidelberg.
   # Высокоскоростной алгоритм сегментации изображений звездного неба, полученных от датчиков сканерного типа / Д.Ю. Пашенцев и др. // Цифровая обработка сигналов: научно-технический журнал. 2011. №3. С. 42-46.
-  btmp = unicode(book_txt)
+  btmp = str(book_txt)
   for w in split_words: btmp = btmp.replace( w, '|' )
   # Срастить несколько потенциальных имён-фамилий
   # заменить точки на |
@@ -75,15 +75,15 @@ def book2authors( fields ):
           else: fld = ' '.join(fs[0:2])
 
         # Оставляем только короткие поля содержащие 1..2 точки
-        if not( 2<len(fld)<20 and 0<fld.count(u'.')<4 ): continue;
-        if len([ '1' for c in fld if c in u'0123456789:()' ])>0: continue; # комбинации с числами
+        if not( 2<len(fld)<20 and 0<fld.count('.')<4 ): continue;
+        if len([ '1' for c in fld if c in '0123456789:()' ])>0: continue; # комбинации с числами
         # Слова которые не должны считаться фамилиями
-        fd = fld.replace(u' ',u'.').split(u'.')
+        fd = fld.replace(' ','.').split('.')
         # 
         if len( [ '1' for w in wrong_words if w in fd or (w[-1]=='.' and w[:-1] in fd)] )>0: continue;
-        a_tmp = fld.replace(u'. ',u'.')
-        while a_tmp[0] == u' ': a_tmp = a_tmp[1:] # Удалить пробелы в начале
-        while a_tmp[-1] == u' ': a_tmp = a_tmp[:-1] # Удалить пробелы в конце
+        a_tmp = fld.replace('. ','.')
+        while a_tmp[0] == ' ': a_tmp = a_tmp[1:] # Удалить пробелы в начале
+        while a_tmp[-1] == ' ': a_tmp = a_tmp[:-1] # Удалить пробелы в конце
         a_tmp = a_tmp.replace("'", '')
         if len(a_tmp) < 3 or a_tmp in authors_list: continue;
         authors_list.append( a_tmp )
@@ -96,7 +96,7 @@ def book2authors( fields ):
         for x in ax: # Находим самое длинное поле
           if len(x) > len(s): s = x;
         if len(s) == 1 : continue; # Фамилия не может быть длиной в одну букву, это ошибка
-        s_out = s + ' ' + ''.join( x + u'.' for x in ax if len(x)>0 and x!=s )
+        s_out = s + ' ' + ''.join( x + '.' for x in ax if len(x)>0 and x!=s )
         s_out1, lang = localize( s_out ) # локализовать имя автора
         authors.append( s_out1 )
 
@@ -106,7 +106,7 @@ def book2authors( fields ):
 def short_name( name_str ):
   ls = name_str.split(' ')
   if len(ls) < 2: name = name_str
-  elif u'.' in name_str: name = name_str
+  elif '.' in name_str: name = name_str
   else:
     ls = name_str.split(' ')
     name = ls[0] + ' ' + ls[1][0] + '.' # ФИ
@@ -142,10 +142,10 @@ def nbcit2size( nb_cit ):
   return sz
 
 def localize( s ):
-  book_txt = unicode(s)
+  book_txt = str(s)
   book_lang = ""
-  lat_c = len(['1' for c in book_txt if u'A' <= c <= u'z']); # количество латинских символов
-  rus_c = len(['1' for c in book_txt if u'А' <= c <= u'я']); # количество русских символов
+  lat_c = len(['1' for c in book_txt if 'A' <= c <= 'z']); # количество латинских символов
+  rus_c = len(['1' for c in book_txt if 'А' <= c <= 'я']); # количество русских символов
   if lat_c > rus_c:
     book_lang = 'L'
     for i in r2l: book_txt = book_txt.replace( i, r2l[i] )
@@ -226,7 +226,7 @@ for node in et.parse("0.xml").findall('.//disser'):
     for book_string in books_list:
       book_lang = ''
       book_txt = book_string[ book_string.find('.')+1: ] # Отбросить число в начале ссылки
-      while book_txt[0]==u' ': book_txt = book_txt[ 1: ] # Отбросить пробелы в начале
+      while book_txt[0]==' ': book_txt = book_txt[ 1: ] # Отбросить пробелы в начале
 
       # Определение языка ссылки, модификации свойственные языку
       book_txt,book_lang = localize( book_txt )
@@ -234,12 +234,12 @@ for node in et.parse("0.xml").findall('.//disser'):
       book_year = get_book_year( fields )
 
       # Отделение патентов в отдельный элемент
-      if u'Пат.' in book_txt or u'Пaт. CШA' in book_txt or u'Патент' in book_txt or u'Patent' in book_txt or u'А.с.' in book_txt or u'заявк' in book_txt.lower():
+      if 'Пат.' in book_txt or 'Пaт. CШA' in book_txt or 'Патент' in book_txt or 'Patent' in book_txt or 'А.с.' in book_txt or 'заявк' in book_txt.lower():
         patent_node = et.SubElement( disser_node,"patent" )
         patent_node.set( 'source', book_txt )
         continue; # Патенты -- это другая история
 
-      if u'диссер' in book_txt.lower() and u'список' not in book_txt.lower() and u'внедрен' not in book_txt.lower():
+      if 'диссер' in book_txt.lower() and 'список' not in book_txt.lower() and 'внедрен' not in book_txt.lower():
         new_disser_node = et.SubElement( disser_node,"linkdiss" ) # <diss_link>
         new_disser_node.set( 'source', book_txt )
         G.add_edge( c_sh, book_txt )
@@ -317,8 +317,8 @@ for node in et.parse("0.xml").findall('.//disser'):
       books_counter = books_counter + 1
 
 
-print "Books: ", books_counter
-print "Authors: ", authors_counter
+print("Books: ", books_counter)
+print("Authors: ", authors_counter)
 
 
 # for d in sorted(dl, key=lambda dis:dis['year']): print d['year'], ':', d['author']
@@ -386,7 +386,7 @@ for gn in list(G.nodes()):
 #for d in sorted(dl, key=lambda dis:dis['year']): print d['year'], ':', d['author']
 for el in sorted(equi): # ,key=lambda e:e[0] # , key=equi.__getitem__
   if len( equi[el] ) > 1:
-    print el, ' = ' , ', '.join( equi[el] )
+    print(el, ' = ' , ', '.join( equi[el] ))
 
 
 
@@ -438,19 +438,19 @@ with open( "bibtex_disser_authors.bib",'w' ) as f:
   for s in phd_list:
     # 'author', 'author_short', 'title', 'inst', 'instshort', 'fieldid', 'fieldname', 'level', 'directorstatus', 'director', 'city', 'year', 'fileid', 'filename', 'udk', 'bib_src'
     a = s['author_short']
-    eng_name = unicode( a[0:a.find(u' ')].lower() )
+    eng_name = str( a[0:a.find(' ')].lower() )
     for c in r2l_translit: eng_name = eng_name.replace( c, r2l_translit[c] )
-    f.write( u"@Phdthesis{" + eng_name + s['year'].encode('utf-8')              + u",\n" )
-    f.write(( "  Title                    = {" + s['title'] + u"},\n" ).encode('utf-8'))
-    f.write(( "  Author                   = {" + s['author_short'].replace(' ',', ') + u"},\n" ).encode('utf-8'))
-    f.write(( "  School                   = {" + s['instshort'] + u"},\n" ).encode('utf-8'))
-    f.write(( "  Year                     = {" + s['year']      + u"},\n" ).encode('utf-8'))
-    f.write(( "  Address                  = {" + s['city']      + u"},\n" ).encode('utf-8'))
-    f.write(( "  Pages                    = {" + s['pages']     + u"},\n" ).encode('utf-8'))
-    if s['level'][0] == u'к':
-      f.write(( "  Prof                     = {" + s['dir_short'].replace(' ',', ') + u"},\n" ).encode('utf-8'))
-    f.write(( "  Speciality               = {" + s['fieldid']     + u"},\n" ).encode('utf-8'))
-    f.write(( "  Type                     = {" + u"дисс. " + s['level']     + u"},\n" ).encode('utf-8'))
+    f.write( "@Phdthesis{" + eng_name + s['year'].encode('utf-8')              + ",\n" )
+    f.write(( "  Title                    = {" + s['title'] + "},\n" ).encode('utf-8'))
+    f.write(( "  Author                   = {" + s['author_short'].replace(' ',', ') + "},\n" ).encode('utf-8'))
+    f.write(( "  School                   = {" + s['instshort'] + "},\n" ).encode('utf-8'))
+    f.write(( "  Year                     = {" + s['year']      + "},\n" ).encode('utf-8'))
+    f.write(( "  Address                  = {" + s['city']      + "},\n" ).encode('utf-8'))
+    f.write(( "  Pages                    = {" + s['pages']     + "},\n" ).encode('utf-8'))
+    if s['level'][0] == 'к':
+      f.write(( "  Prof                     = {" + s['dir_short'].replace(' ',', ') + "},\n" ).encode('utf-8'))
+    f.write(( "  Speciality               = {" + s['fieldid']     + "},\n" ).encode('utf-8'))
+    f.write(( "  Type                     = {" + "дисс. " + s['level']     + "},\n" ).encode('utf-8'))
     f.write(( "  Owner                    = {sigma},\n" ).encode('utf-8'))
     #f.write( u"  Timestamp                = {2015.10.28}")
     f.write(( "}\n\n" ).encode('utf-8'))
