@@ -29,7 +29,7 @@ wrong_words = [ 'Атлас', 'Inform', 'Исслед', 'Publ', 'Proc', 'Guidanc
 
 split_words = [
     ' and ', ' And ', 'и др.', 'М.:', 'et al.', 'et all.', 'Под. ред.',
-    'Под ред.', '. —', '//', '/', ', ', ','
+    'Под ред.', '. —', '//', '/', ', ', ',',
 ]
 
 r2l_translit = { 'а':'a', 'б':'b', 'в':'v', 'г':'g', 'д':'d', 'е':'e', 'ё':'yo', 'ж':'jh', 'з':'z',\
@@ -80,8 +80,10 @@ def book2authors(fields):
         #                                                 |Lander J., Powell Т., Cox J. Orbit Determination and ...|
         fs = fld.split(' ')  # fld.replace('. ',' ')
         if len(fs) > 2 and 1 < len(fs[0]) < 16 and fs[1].count('.') > 0:
-            if len(fs[2]) < 3 and fs[2].count('.') > 0: fld = ' '.join(fs[0:3])
-            else: fld = ' '.join(fs[0:2])
+            if len(fs[2]) < 3 and fs[2].count('.') > 0:
+              fld = ' '.join(fs[0:3])
+            else:
+              fld = ' '.join(fs[0:2])
 
         # Оставляем только короткие поля содержащие 1..2 точки
         if not (2 < len(fld) < 20 and 0 < fld.count('.') < 4): continue
@@ -124,12 +126,15 @@ def book2authors(fields):
 
 def short_name(name_str):
     ls = name_str.split(' ')
-    if len(ls) < 2: name = name_str
-    elif '.' in name_str: name = name_str
+    if len(ls) < 2:
+      name = name_str
+    elif '.' in name_str:
+      name = name_str
     else:
         ls = name_str.split(' ')
         name = ls[0] + ' ' + ls[1][0] + '.'  # ФИ
-        if len(ls) > 2: name = name + ls[2][0] + '.'  # О
+        if len(ls) > 2:
+          name = name + ls[2][0] + '.'  # О
     return name
 
 
@@ -140,7 +145,8 @@ def name2key(name_str):
         key = key.replace(c, '')
     for c in r2l_translit:
         key = key.replace(c, r2l_translit[c])
-    if key in keys_equi: key = keys_equi[key]
+    if key in keys_equi:
+      key = keys_equi[key]
     return key
 
 
@@ -197,7 +203,8 @@ def word_wrap(book_txt):
             counter = counter + len(b) + 1
     return wrapped
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     G = nx.DiGraph()
     root = et.Element("root")
     books_by_authors = {}
@@ -210,9 +217,9 @@ if __name__=="__main__":
     for node in et.parse("0.xml").findall('.//disser'):
         current_dis = {}
         for tag in [
-                'author', 'author_short', 'title', 'inst', 'instshort', 'fieldid',
-                'fieldname', 'level', 'directorstatus', 'director', 'city', 'year',
-                'fileid', 'filename', 'udk', 'bib_src', 'pages'
+                'author', 'author_short', 'title', 'inst', 'instshort',
+                'fieldid', 'fieldname', 'level', 'directorstatus', 'director',
+                'city', 'year', 'fileid', 'filename', 'udk', 'bib_src', 'pages'
         ]:
             if tag in node.attrib: current_dis[tag] = node.attrib[tag]
             else: current_dis[tag] = ""
@@ -223,9 +230,9 @@ if __name__=="__main__":
 
         disser_node = et.SubElement(root, "disser")
         for tag in [
-                'author', 'author_short', 'title', 'inst', 'instshort', 'fieldid',
-                'fieldname', 'level', 'directorstatus', 'director', 'city', 'year',
-                'fileid', 'filename', 'udk', 'bib_src', 'pages'
+                'author', 'author_short', 'title', 'inst', 'instshort',
+                'fieldid', 'fieldname', 'level', 'directorstatus', 'director',
+                'city', 'year', 'fileid', 'filename', 'udk', 'bib_src', 'pages'
         ]:
             disser_node.set(tag, current_dis[tag])
 
@@ -239,13 +246,15 @@ if __name__=="__main__":
                     ]
             else:
                 bibliography_node = html.parse(
-                    current_dis['filename'], et.XMLParser(recover=True))  #bk = []
+                    current_dis['filename'],
+                    et.XMLParser(recover=True))  #bk = []
                 books_list_tmp = bibliography_node.findall(
                     ".//{%s}div[@class='field field-type-filetext field-field-biblio']/{%s}div[@class='field-items']/{%s}div[@class='field-item odd']/{%s}p"
                     % (XHTML_NS, XHTML_NS, XHTML_NS, XHTML_NS))
                 for element in books_list_tmp:
-                    books_list.append(''.join(element.itertext(
-                    )))  # Теперь список содержит только библиографическую строку
+                    books_list.append(
+                        ''.join(element.itertext())
+                    )  # Теперь список содержит только библиографическую строку
 
             # Ключ из имени автора диссертации
             c_sh = name2key(current_dis['author_short'])
@@ -256,8 +265,8 @@ if __name__=="__main__":
             d_sh = name2key(dir_short)
 
             G.add_node(c_sh)
-            G.node[c_sh][
-                'label'] = current_dis['author_short'] + '\n' + current_dis['year']
+            G.node[c_sh]['label'] = current_dis[
+                'author_short'] + '\n' + current_dis['year']
             G.node[c_sh]['type'] = 'diss'
             G.node[c_sh]['inst'] = current_dis['instshort']
             G.node[c_sh]['year'] = current_dis['year']
@@ -287,7 +296,8 @@ if __name__=="__main__":
                     continue
                     # Патенты -- это другая история
 
-                if 'диссер' in book_txt.lower() and 'список' not in book_txt.lower(
+                if 'диссер' in book_txt.lower(
+                ) and 'список' not in book_txt.lower(
                 ) and 'внедрен' not in book_txt.lower():
                     new_disser_node = et.SubElement(disser_node,
                                                     "linkdiss")  # <diss_link>
@@ -327,7 +337,8 @@ if __name__=="__main__":
                                    ]:  # Проходим каждый первый элемент "книга"
                             if Levenshtein.ratio(bk, book_txt) > 0.8: found = 1
                         if found == 0:
-                            books_by_authors[a_sh].append((book_txt, book_year))
+                            books_by_authors[a_sh].append(
+                                (book_txt, book_year))
 
                     keys_equi[a_sh] = a_sh
 
@@ -457,8 +468,8 @@ if __name__=="__main__":
 
     # Значок публикации может быть размером с точку
     for gn in list(G.nodes()):
-        if 'type' in G.node[gn] and G.node[gn]['type'] != 'author' and G.node[gn][
-                'type'] != 'diss':  #  or G.node[gn]['type']=='linkdiss'
+        if 'type' in G.node[gn] and G.node[gn]['type'] != 'author' and G.node[
+                gn]['type'] != 'diss':  #  or G.node[gn]['type']=='linkdiss'
             if gn in books_by_authors:
                 for book_txt, book_year in books_by_authors[gn]:
                     G.node[gn]['width'] = 1
@@ -471,8 +482,8 @@ if __name__=="__main__":
         for a in books_by_authors:
             for book_txt, book_year in books_by_authors[a]:
                 f.write(
-                    book_txt.replace('\n', ' ').replace('\r', '').encode('utf-8') +
-                    "\n")
+                    book_txt.replace('\n', ' ').replace('\r', '').encode(
+                        'utf-8') + "\n")
 
     book_years = []
     for a in books_by_authors:
@@ -489,7 +500,8 @@ if __name__=="__main__":
 
     with open("8_best_books_by_authors.txt", 'w') as f:
         for b in best_books:
-            f.write(b.replace('\n', ' ').replace('\r', '').encode('utf-8') + "\n")
+            f.write(
+                b.replace('\n', ' ').replace('\r', '').encode('utf-8') + "\n")
 
     #from networkx.drawing.nx_pydot import write_dot
     #import matplotlib.pyplot as plt
@@ -505,12 +517,13 @@ if __name__=="__main__":
             eng_name = str(a[0:a.find(' ')].lower())
             for c in r2l_translit:
                 eng_name = eng_name.replace(c, r2l_translit[c])
-            f.write("@Phdthesis{" + eng_name + s['year'].encode('utf-8') + ",\n")
+            f.write("@Phdthesis{" + eng_name + s['year'].encode('utf-8') +
+                    ",\n")
             f.write(("  Title                    = {" + s['title'] +
                      "},\n").encode('utf-8'))
-            f.write(
-                ("  Author                   = {" +
-                 s['author_short'].replace(' ', ', ') + "},\n").encode('utf-8'))
+            f.write(("  Author                   = {" +
+                     s['author_short'].replace(' ', ', ') +
+                     "},\n").encode('utf-8'))
             f.write(("  School                   = {" + s['instshort'] +
                      "},\n").encode('utf-8'))
             f.write(("  Year                     = {" + s['year'] +
@@ -520,13 +533,14 @@ if __name__=="__main__":
             f.write(("  Pages                    = {" + s['pages'] +
                      "},\n").encode('utf-8'))
             if s['level'][0] == 'к':
-                f.write(
-                    ("  Prof                     = {" +
-                     s['dir_short'].replace(' ', ', ') + "},\n").encode('utf-8'))
+                f.write(("  Prof                     = {" +
+                         s['dir_short'].replace(' ', ', ') +
+                         "},\n").encode('utf-8'))
             f.write(("  Speciality               = {" + s['fieldid'] +
                      "},\n").encode('utf-8'))
             f.write(("  Type                     = {" + "дисс. " + s['level'] +
                      "},\n").encode('utf-8'))
-            f.write(("  Owner                    = {sigma},\n").encode('utf-8'))
+            f.write(
+                ("  Owner                    = {sigma},\n").encode('utf-8'))
             #f.write( u"  Timestamp                = {2015.10.28}")
             f.write(("}\n\n").encode('utf-8'))
