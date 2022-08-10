@@ -98,11 +98,7 @@ def book2authors(fields):
                 if w in fd or (w[-1] == '.' and w[:-1] in fd)
         ]) > 0:
             continue
-        a_tmp = fld.replace('. ', '.')
-        while a_tmp[0] == ' ':
-            a_tmp = a_tmp[1:]  # Удалить пробелы в начале
-        while a_tmp[-1] == ' ':
-            a_tmp = a_tmp[:-1]  # Удалить пробелы в конце
+        a_tmp = fld.replace('. ', '.').strip()
         a_tmp = a_tmp.replace("'", '')
         if len(a_tmp) < 3 or a_tmp in authors_list: continue
         authors_list.append(a_tmp)

@@ -35,6 +35,7 @@ class TestBasic:
 
     def test_authors(self):
         for i, b in enumerate(self.parts):
+            print(b)
             aus = book2authors(b)
             print(aus)
             assert(len(aus) > 0), "assertion failed authors={}".format(aus)
