@@ -2,6 +2,9 @@
 #from nose.tools import assert_raises, nottest
 
 #@SkipTest
+from bibanalyzer import *
+
+
 class TestBasic:
 
     def setUp(self):
